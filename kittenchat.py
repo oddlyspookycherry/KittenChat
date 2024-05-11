@@ -3,6 +3,7 @@ from config import *
 from utils import ThreadResult
 import socket
 import threading
+import time
 
 # parsing input arguments
 arg_parser = ArgumentParser(prog='kittenchat')
@@ -40,6 +41,7 @@ def init_send_socket(res: ThreadResult):
             res.result = send_socket
             return
         except:
+            time.sleep(1)
             continue
 
 def main():
