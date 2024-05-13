@@ -1,23 +1,23 @@
 from argparse import ArgumentParser
 from config import *
-from utils import ThreadResult
+from utils import ThreadResult, is_valid_ip
 import socket
 import threading
 import time
 
-# parsing input arguments
-arg_parser = ArgumentParser(prog='kittenchat')
-arg_parser.add_argument('-peer_ip', type=str, required=True)
-arg_parser.add_argument('-my_port', type=int, required=False)
-arg_parser.add_argument('-peer_port', type=int, required=False)
-arg_parser.add_argument('-name', type=str, required=True)
-args = arg_parser.parse_args()
-peer_ip, my_port, peer_port, client_name = \
-    args.peer_ip, args.my_port, args.peer_port, args.name
+class PeerConnection():
+    def __init__(self, peer_ip : str, my_port : int, peer_port : int, client_name : str) -> None:
+        if not is_valid_ip(peer_ip):
+            raise ValueError("Peer IP invalid")
+        self.peer_ip = peer_ip
 
-my_port = my_port or DEFAULT_PORT
-peer_port = peer_port or DEFAULT_PORT
-peer_name = None
+        self.port = my_port or DEFAULT_PORT
+        self.peer_port = peer_port or DEFAULT_PORT
+
+        if len(client_name) > MAX_NAME_SIZE:
+            raise ValueError("Client name too long")
+        self.name = client_name
+        self.peer_name = None
 
 def init_recv_socket(res: ThreadResult):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as welcome_socket:
@@ -53,6 +53,18 @@ def receiver(sock):
 
 def main():
     
+    # parsing input arguments
+    arg_parser = ArgumentParser(prog='kittenchat')
+    arg_parser.add_argument('-peer_ip', type=str, required=True)
+    arg_parser.add_argument('-my_port', type=int, required=False)
+    arg_parser.add_argument('-peer_port', type=int, required=False)
+    arg_parser.add_argument('-name', type=str, required=True)
+    args = arg_parser.parse_args()
+    peer_ip, my_port, peer_port, client_name = \
+        args.peer_ip, args.my_port, args.peer_port, args.name
+    
+
+
     # Peers connect
     send_socket_res = ThreadResult()
     recv_socket_res = ThreadResult()
