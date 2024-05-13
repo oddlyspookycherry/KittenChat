@@ -27,11 +27,11 @@ def main():
         recv_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         recv_socket.bind((HOST, port))
         try:
-            recv_socket.settimeout(3)
-            recv_socket.connect((peer_ip, port))
+            ping_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            ping_socket.settimeout(3)
+            ping_socket.connect((peer_ip, port))
         except:
             print("Firewall pinged.")
-        recv_socket.settimeout(1000)
         recv_socket.listen(1)
         owner_socket, owner_address = recv_socket.accept()
         msg = owner_socket.recv(1024).decode()
