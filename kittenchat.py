@@ -60,7 +60,7 @@ class PeerParticipant():
 
     def _init_recv_socket(self, res: ThreadResult):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as welcome_socket:
-            welcome_socket.bind(('', self.port))
+            welcome_socket.bind(('0.0.0.0', self.port))
             welcome_socket.listen(1)
 
             while True:
