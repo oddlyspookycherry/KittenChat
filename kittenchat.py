@@ -17,6 +17,7 @@ peer_ip, my_port, peer_port, client_name = \
 
 my_port = my_port or DEFAULT_PORT
 peer_port = peer_port or DEFAULT_PORT
+peer_name = None
 
 def init_recv_socket(res: ThreadResult):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as welcome_socket:
@@ -44,6 +45,12 @@ def init_send_socket(res: ThreadResult):
             time.sleep(1)
             continue
 
+def sender(sock):
+    pass
+
+def receiver(sock):
+    pass
+
 def main():
     
     # Peers connect
@@ -56,8 +63,18 @@ def main():
     init_send_thread.join()
     init_recv_thread.join()
     send_socket = send_socket_res.result
+    send_socket: socket.socket
     recv_socket = recv_socket_res.result
+    recv_socket: socket.socket
     print("Connection with kitten-peer established!")
+
+    send_thread = threading.Thread(target=sender, args=(send_socket,))
+    recv_thread = threading.Thread(target=receiver, args=(recv_socket,))
+    send_thread.start()
+    recv_thread.start()
+
+    send_thread.join()
+    recv_thread.join()
 
 if __name__ == "__main__":
     main()
