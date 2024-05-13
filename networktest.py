@@ -32,6 +32,8 @@ def main():
             ping_socket.connect((peer_ip, port))
         except:
             print("Firewall pinged.")
+        finally:
+            ping_socket.close()
         recv_socket.listen(1)
         owner_socket, owner_address = recv_socket.accept()
         msg = owner_socket.recv(1024).decode()
